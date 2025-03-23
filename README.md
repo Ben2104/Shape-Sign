@@ -44,7 +44,8 @@ Run the models:
 ```
 
 # Model Architecture
-## Neural Network
+
+## Long Short Term Memory
 ```python
 model = Sequential(
     [
@@ -66,7 +67,8 @@ model.compile(
     loss="categorical_crossentropy", metrics=["accuracy"], optimizer=Adam(0.001)
 )
 ```
-## Long Short Term Memory
+
+## Neural Network
 ```python
 model = Sequential([
     InputLayer((len(X.columns),)),
