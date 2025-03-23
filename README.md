@@ -29,3 +29,6 @@ To run this project, you will need to start both the frontend and the model as a
 ```
   python main,py
 ```
+# Technologies Used
+- Frontend: NextJS, ReactJS, TailwindCSS
+- BackEnd: Tensorflow, Python
