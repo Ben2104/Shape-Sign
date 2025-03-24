@@ -4,6 +4,9 @@ Shape-Sign is an interactive application that utilizes hand gesture recognition 
 <a href="https://devpost.com/software/shape-sign">BeachHacks 8.0 Submission </a>
 # Team Members:
 - Khoi Do <a href="https://github.com/Ben2104">@Ben2104</a>: Frontend, UI/UX Design
+- Jason Tran <a href=""> </a>: Frontend, UI/UX Design
+- Kien Pham <a href="https://github.com/ki3n98">@ki3n98</a>: Backend, Database
+- Nguyen Nguyen <a href=""> </a>: Backend, Database
 # Getting Started
 To run this project, you will need to start both the frontend and the model as a backend on separate terminals. Follow the steps below to set it up.
 
