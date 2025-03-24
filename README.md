@@ -4,21 +4,22 @@ Shape-Sign is an interactive application that utilizes hand gesture recognition 
 
 # Getting Started
 To run this project, you will need to start both the frontend and the model as a backend on separate terminals. Follow the steps below to set it up.
-## Frontend
-1. Clone the repository
+
+Clone the repository
 ```
   git clone [URL repository]
 ```
+## Frontend
 
-2. Navigate to the frontend directory:
+Navigate to the frontend directory:
 ```
   cd frontend
 ```
-3. Install dependencies:
+Install dependencies:
 ```
   npm install
 ```
-4. Run the frontend:
+Run the frontend:
 ```
   npm run dev
 ```
