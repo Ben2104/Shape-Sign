@@ -23,7 +23,7 @@ const SignLanguageDisplay = () => {
   };
 
   return (
-    <section id="sign-language-display" className="bg-blue-50 py-16">
+    <section id="sign-language-display" className="py-16">
       <div className="max-w-4xl mx-auto text-center px-4">
         <h2 className="text-4xl font-bold text-blue-600 mb-6">
           ASL Learning Game
