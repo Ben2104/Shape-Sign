@@ -5,7 +5,12 @@ const people = [
         imageUrl:
             '/Khoi.jpeg'
     },
-    // More people..
+    {
+        name: 'Jason Tran',
+        role: 'Frontend Developer',
+        imageUrl:
+            '/Jason.jpeg'
+    },
     {
         name: "Syn Nguyen",
         role: 'Backend Developer',
