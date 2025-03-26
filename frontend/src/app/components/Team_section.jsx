@@ -3,20 +3,20 @@ const people = [
         name: 'Hoang Khoi Do',
         role: 'Frontend Developer',
         imageUrl:
-            'https://media.discordapp.net/attachments/1349794449663725640/1353146279873482923/PhotoID.jpeg?ex=67e0972d&is=67df45ad&hm=5ec60fac0fe96c45c4a3920f820fdda191df06dbfb57b6f1884bafb0d68643a7&=&format=webp&width=1066&height=1602'
+            '/Khoi.jpeg'
     },
     // More people..
     {
         name: "Syn Nguyen",
         role: 'Backend Developer',
         imageUrl:
-            'https://media.discordapp.net/attachments/1349794449663725640/1353146120573812837/IMG_2554.jpg?ex=67e09707&is=67df4587&hm=7efe02dccb808bc012d0b56d8562a28093357f39e4abe4c3902fdf9e5748bd56&=&format=webp&width=1202&height=1604'
+            '/Syn.jpg'
     },
     {
         name: "Kien Pham",
         role: 'Backend Developer',
         imageUrl:
-            'https://media.discordapp.net/attachments/1349794449663725640/1353145732340777091/IMG_3156.jpg?ex=67e096aa&is=67df452a&hm=a5ee2b5940d699e5fc262e9c36b64281d98c981f59ccdfe8d232aedd6456b9be&=&format=webp&width=1823&height=1604'
+            '/Kien.jpg'
     }
 ]
 
