@@ -19,12 +19,12 @@ const MusicPage = () => {
         <VideoPlayer src="/volume_control.mp4" />
         <div className="flex space-x-4 mb-8">
                   <Card
-                    imgSrc="https://media.discordapp.net/attachments/1349794449663725640/1353360930536161381/Screenshot_2025-03-23_at_6.33.01_AM.png?ex=67e15f16&is=67e00d96&hm=8cc705aa8adbb9f14f9abd992f6554641e7739d77c62588108e5df3af61ba407&=&format=webp&quality=lossless&width=2083&height=1417"
+                    imgSrc="/volumn_up.png"
                     title="Volumn Up"
                     description="Hand gesture for volumn up"
                   />
                   <Card
-                    imgSrc="https://media.discordapp.net/attachments/1349794449663725640/1353361000581304410/Screenshot_2025-03-23_at_6.33.23_AM.png?ex=67e15f26&is=67e00da6&hm=ddc2da57f81f502b836dc72be9dd0d30918629fc756c03c7b0a1ea4eea70d64f&=&format=webp&quality=lossless&width=2083&height=1417"
+                    imgSrc="/volumn_down.png"
                     title="Volumn Down"
                     description="Hand gesture for volumn down"
                   />
