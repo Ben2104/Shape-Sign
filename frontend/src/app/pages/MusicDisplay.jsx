@@ -6,8 +6,8 @@ const MusicDisplay = () => {
   // Images for the carousel
   const carouselImages = [
     { id: 1, src: "Music1.png", alt: "Game Demo Image 1" }, //Insert images here after KIEN and SYN demo placeholders text for now
-    { id: 2, src: "https://media.discordapp.net/attachments/1349794449663725640/1353360930536161381/Screenshot_2025-03-23_at_6.33.01_AM.png?ex=67e15f16&is=67e00d96&hm=8cc705aa8adbb9f14f9abd992f6554641e7739d77c62588108e5df3af61ba407&=&format=webp&quality=lossless&width=2083&height=1417", alt: "Game Demo Image 2" },
-    { id: 3, src: "https://media.discordapp.net/attachments/1349794449663725640/1353361000581304410/Screenshot_2025-03-23_at_6.33.23_AM.png?ex=67e15f26&is=67e00da6&hm=ddc2da57f81f502b836dc72be9dd0d30918629fc756c03c7b0a1ea4eea70d64f&=&format=webp&quality=lossless&width=2083&height=1417", alt: "Game Demo Image 3" }
+    { id: 2, src: "/volumn_up.png", alt: "Game Demo Image 2" },
+    { id: 3, src: "/volumn_down.png", alt: "Game Demo Image 3" }
   ];
 
   // State for carousel
