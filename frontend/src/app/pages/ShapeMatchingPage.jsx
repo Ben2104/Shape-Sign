@@ -19,12 +19,12 @@ const ShapeMatchingPage = () => {
         <VideoPlayer src="/shape_matching.mp4" />
         <div className="flex space-x-4 mb-8">
           <Card
-            imgSrc="https://media.discordapp.net/attachments/1349794449663725640/1353283490904412242/image.png?ex=67e116f7&is=67dfc577&hm=e098e91b74fbe12f0ca421c1e6f661d9323c256f89c70f4bfb7a9c7a28e628bf&=&format=webp&quality=lossless&width=1168&height=826"
+            imgSrc="/click.png"
             title="Click"
             description="Hand gesture for mouse clicking"
           />
           <Card
-            imgSrc="https://media.discordapp.net/attachments/1349794449663725640/1353283706730844261/image.png?ex=67e1172a&is=67dfc5aa&hm=7dd734697e83171c194758c9abc7fa1907fce942a722b3642f562a3cc22558ed&=&format=webp&quality=lossless&width=1148&height=844"
+            imgSrc="/hover.png"
             title="Hover"
             description="Hand gesture for mouse hover"
           />
