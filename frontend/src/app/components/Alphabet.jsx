@@ -50,6 +50,7 @@ export default function Alphabet() {
               handleNextLetter();
             }
           }}
+          autoFocus // Automatically focus on the input field
         />
         <div className="mt-4 text-center">
           <button
