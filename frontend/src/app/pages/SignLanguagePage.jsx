@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar";
 import Alphabet from "../components/Alphabet";
 import Phrases from "../components/Phrases";
 import Link from "next/link";
+import VideoPlayer from "../components/VideoPlayer";
 
 const SignLanguagePage = () => {
   const [selectedOption, setSelectedOption] = useState("Alphabet");
@@ -21,7 +22,7 @@ const SignLanguagePage = () => {
             Back
           </Link>
         </div>
-
+        <VideoPlayer src="/ASL.mp4" />
         <div className="mb-8">
           <p className="text-gray-700 mb-4">
             Use your hand gesture to learn American Sign Language (ASL) through
