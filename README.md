@@ -1,7 +1,11 @@
 # Shape-Sign
 Shape-Sign is an interactive application that utilizes hand gesture recognition models to help users learn and engage with sign language. This project consists of a frontend interface and a machine learning model running simultaneously.
 
+<a href="https://shape-sign-git-main-khoi-dos-projects-cd46277e.vercel.app/"> Check out our demo page </a>
+<br>
+<br>
 <a href="https://devpost.com/software/shape-sign">BeachHacks 8.0 Submission </a>
+
 # Team Members:
 - Khoi Do <a href="https://github.com/Ben2104">@Ben2104</a>: Frontend, UI/UX Design
 - Jason Tran <a href="https://github.com/jtran848">@jtran848</a>: Frontend, UI/UX Design
