@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import ShapeMatchingGame from "./components/ShapeMatchingGame";
+// import ShapeMatchingGame from "./components/ShapeMatchingGame";
 import MusicDisplay from "./pages/MusicDisplay";
 import Navbar from "./components/Navbar";
 import About from "./pages/About";
