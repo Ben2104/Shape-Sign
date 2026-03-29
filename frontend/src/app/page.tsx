@@ -22,9 +22,9 @@ export default function LandingPage() {
       <div className="pt-24">
         <Home />
         <About />
+        <SignLanguageDisplay />
         <MusicDisplay />
         <ShapeMatchingDisplay />
-        <SignLanguageDisplay />
       </div>
     </div>
   );

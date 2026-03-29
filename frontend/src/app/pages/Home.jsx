@@ -28,8 +28,11 @@ export const Home = () => {
         </p>
 
         <div className="flex flex-wrap justify-center gap-4">
-          <Link href="#shape-matching-display" className="btn-primary">
-            Shape Matching
+          <Link
+            href="#sign-language-display"
+            className="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-8 rounded-full text-lg transition-colors shadow-lg"
+          >
+            ASL Learning
           </Link>
           <Link
             href="#music-control-display"
@@ -37,11 +40,8 @@ export const Home = () => {
           >
             Music Control
           </Link>
-          <Link
-            href="#sign-language-display"
-            className="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-8 rounded-full text-lg transition-colors shadow-lg"
-          >
-            ASL Learning
+          <Link href="#shape-matching-display" className="btn-primary">
+            Shape Matching
           </Link>
         </div>
       </div>

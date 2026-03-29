@@ -4,11 +4,11 @@ import Navbar from "../components/Navbar";
 import Alphabet from "../components/Alphabet";
 import Phrases from "../components/Phrases";
 import Link from "next/link";
-import VideoPlayer from "../components/VideoPlayer";
+import Footer from "../components/Footer";
 
 const SignLanguagePage = () => {
   const [selectedOption, setSelectedOption] = useState("Alphabet");
-  const [showImage, setShowImage] = useState(false); // Toggle state for image
+  const [showImage, setShowImage] = useState(true);
 
   return (
     <div>
@@ -22,7 +22,6 @@ const SignLanguagePage = () => {
             Back
           </Link>
         </div>
-        <VideoPlayer src="/ASL.mp4" />
         <div className="mb-8">
           <p className="text-gray-700 mb-4">
             Use your hand gesture to learn American Sign Language (ASL) through
@@ -34,11 +33,12 @@ const SignLanguagePage = () => {
             </h2>
             <ul className="list-disc pl-5 space-y-1 text-black">
               <li>
-                The player will need to create a hand gesture that matches with
-                the below letter or phrases.
+                Switch to <strong>Webcam</strong> mode and use your hand gestures to sign the displayed letter or phrase.
               </li>
-              <li>If you're having trouble, feel free to click on the 'Show Reference' button for assistance.
-</li>
+              <li>
+                Or use <strong>Keyboard</strong> mode to type your answer instead.
+              </li>
+              <li>If you&apos;re having trouble, feel free to click on the &apos;Show Reference&apos; button for assistance.</li>
             </ul>
           </div>
         </div>
@@ -85,24 +85,13 @@ const SignLanguagePage = () => {
         <img
           src="https://www.startasl.com/wp-content/uploads/sign-language-alphabet.png" // Update with the correct path to your image
           alt="ASL Reference"
-          className="fixed bottom-20 left-10 w-80 h-auto shadow-lg rounded-lg border border-gray-300 bg-white p-2"
+          className="fixed bottom-20 left-10 w-[420px] h-auto shadow-lg rounded-lg border border-gray-300 bg-white p-2"
         />
       )}
 
-      {/* YouTube Video for Phrases */}
-      {selectedOption === "Phrases" && showImage && (
-        <div className="fixed bottom-20 left-10 w-80 h-auto shadow-lg rounded-lg border border-gray-300 bg-white p-2">
-          <iframe
-            width="100%"
-            height="315"
-            src="https://www.youtube.com/embed/2ydksrdlI9o" // Embed YouTube video
-            title="ASL Phrases Reference"
-            frameBorder="0"
-            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          ></iframe>
-        </div>
-      )}
+      <div className="mt-12">
+        <Footer />
+      </div>
     </div>
   );
 };

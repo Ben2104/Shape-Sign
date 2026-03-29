@@ -5,6 +5,7 @@ import Music from '../components/Music';
 import Link from 'next/link';
 import VideoPlayer from '../components/VideoPlayer';
 import Card from '../components/Card';
+import Footer from '../components/Footer';
 
 const MusicPage = () => {
   return (
@@ -46,6 +47,9 @@ const MusicPage = () => {
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
           <Music  />
         </div>
+      </div>
+      <div className="mt-12">
+        <Footer />
       </div>
     </div>
   );

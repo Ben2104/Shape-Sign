@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -9,42 +9,44 @@ import {
   useSensors,
   DragOverlay
 } from '@dnd-kit/core';
-import { CSS } from '@dnd-kit/utilities';
 import { useDraggable } from '@dnd-kit/core';
 import { useDroppable } from '@dnd-kit/core';
+import WebcamFeed from './WebcamFeed';
+import { useHandCursor } from '../hooks/useHandCursor';
 
 const ShapeMatchingGame = () => {
-  // Define the shapes with their properties - now with pentagon added
+  const [useCamera, setUseCamera] = useState(true);
+  const gameRef = useRef(null);
+  const shapeElements = useRef(new Map());
+  const zoneElements = useRef(new Map());
+  const { cursor, update } = useHandCursor(gameRef, shapeElements, zoneElements);
+  const [gestureHeld, setGestureHeld] = useState(null); // shape id being held by gesture
+
   const initialShapes = [
     { id: 'diamond', color: '#c44ed0', type: 'diamond' },
     { id: 'triangle', color: '#ffff00', type: 'triangle' },
     { id: 'square', color: '#7b0f80', type: 'square' },
     { id: 'rectangle', color: '#a0e39a', type: 'rectangle' },
     { id: 'circle', color: '#f05c3f', type: 'circle' },
-    { id: 'pentagon', color: '#4287f5', type: 'pentagon' }, // Added pentagon
+    { id: 'pentagon', color: '#4287f5', type: 'pentagon' },
   ];
 
-  // State for randomized shapes
   const [shapes, setShapes] = useState([...initialShapes]);
 
-  // Define drop zones - now with pentagon added
   const dropZones = [
     { id: 'triangle-zone', accepts: 'triangle', label: 'triangle' },
     { id: 'rectangle-zone', accepts: 'rectangle', label: 'rectangle' },
     { id: 'diamond-zone', accepts: 'diamond', label: 'diamond' },
     { id: 'square-zone', accepts: 'square', label: 'square' },
     { id: 'circle-zone', accepts: 'circle', label: 'circle' },
-    { id: 'pentagon-zone', accepts: 'pentagon', label: 'pentagon' }, // Added pentagon zone
+    { id: 'pentagon-zone', accepts: 'pentagon', label: 'pentagon' },
   ];
 
-  // State to track which shapes have been placed correctly
   const [placedShapes, setPlacedShapes] = useState({});
   const [activeId, setActiveId] = useState(null);
 
-  // Function to randomize shapes
   const randomizeShapes = () => {
     const shuffled = [...initialShapes];
-    // Fisher-Yates shuffle algorithm
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
@@ -52,20 +54,44 @@ const ShapeMatchingGame = () => {
     setShapes(shuffled);
   };
 
-  // Randomize shapes on initial load
   useEffect(() => {
     randomizeShapes();
   }, []);
 
-  // Configure sensors for drag detection
+  // Handle gesture grab/drop events
+  useEffect(() => {
+    if (!useCamera) return;
+
+    if (cursor.justGrabbed) {
+      setGestureHeld(cursor.justGrabbed);
+    }
+    if (cursor.justDropped) {
+      const { shapeId, zoneId } = cursor.justDropped;
+      const shape = shapes.find(s => s.id === shapeId);
+      const dropZone = dropZones.find(d => d.id === zoneId);
+      if (dropZone && shape && shape.type === dropZone.accepts) {
+        setPlacedShapes(prev => ({ ...prev, [shape.id]: dropZone.id }));
+      }
+      setGestureHeld(null);
+    }
+    if (!cursor.isGrabbing) {
+      setGestureHeld(null);
+    }
+  }, [cursor, useCamera]);
+
+  const onLandmarks = useCallback(
+    (landmarks) => {
+      update(landmarks);
+    },
+    [update]
+  );
+
+  // Mouse/keyboard dnd-kit sensors
   const sensors = useSensors(
     useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 5, // Minimum drag distance to start a drag operation
-      },
+      activationConstraint: { distance: 5 },
     }),
     useSensor(KeyboardSensor, {
-      // Using standard keyboard controls
       keyboardCodes: {
         start: ['Space', 'Enter'],
         cancel: ['Escape'],
@@ -74,47 +100,35 @@ const ShapeMatchingGame = () => {
     })
   );
 
-  // Handle drag start
   function handleDragStart(event) {
-    const { active } = event;
-    setActiveId(active.id);
+    setActiveId(event.active.id);
   }
 
-  // Handle drag end
   function handleDragEnd(event) {
     const { active, over } = event;
     setActiveId(null);
-    
     if (!over) return;
-    
-    // Check if the shape matches the drop zone
     const shape = shapes.find(s => s.id === active.id);
     const dropZone = dropZones.find(d => d.id === over.id);
-    
     if (dropZone && shape.type === dropZone.accepts) {
-      setPlacedShapes(prev => ({
-        ...prev,
-        [shape.id]: dropZone.id
-      }));
+      setPlacedShapes(prev => ({ ...prev, [shape.id]: dropZone.id }));
     }
   }
 
-  // Handle game reset
   const resetGame = () => {
     setPlacedShapes({});
+    setGestureHeld(null);
     randomizeShapes();
   };
 
-  // Get the active shape for the drag overlay
   const activeShape = shapes.find(s => s.id === activeId);
+  const gestureShape = shapes.find(s => s.id === gestureHeld);
 
-  // Calculate score
   const score = Object.keys(placedShapes).length;
   const isGameComplete = score === shapes.length;
 
-  // Randomize dropZones order too
   const [randomizedDropZones, setRandomizedDropZones] = useState([...dropZones]);
-  
+
   useEffect(() => {
     const shuffled = [...dropZones];
     for (let i = shuffled.length - 1; i > 0; i--) {
@@ -122,35 +136,103 @@ const ShapeMatchingGame = () => {
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
     setRandomizedDropZones(shuffled);
-  }, [placedShapes]); // Re-randomize when game is reset
+  }, [placedShapes]);
+
+  // Register shape/zone DOM refs
+  const registerShape = useCallback((id, el) => {
+    if (el) shapeElements.current.set(id, el);
+    else shapeElements.current.delete(id);
+  }, []);
+
+  const registerZone = useCallback((id, el) => {
+    if (el) zoneElements.current.set(id, el);
+    else zoneElements.current.delete(id);
+  }, []);
 
   return (
-    <div className="w-full h-full bg-blue-400 p-6 flex flex-col">
-      <div className="mb-4 text-white text-xl font-bold">
-        Score: {score} / {shapes.length}
-        {isGameComplete && <span className="ml-4 text-yellow-300">Game Complete!</span>}
+    <div ref={gameRef} className="w-full h-full bg-blue-400 p-6 flex flex-col relative">
+      {/* Camera Toggle */}
+      <div className="flex justify-between items-center mb-4">
+        <div className="text-white text-xl font-bold">
+          Score: {score} / {shapes.length}
+          {isGameComplete && <span className="ml-4 text-yellow-300">Game Complete!</span>}
+        </div>
+        <div className="flex">
+          <button
+            className={`px-3 py-1 rounded-l-lg text-sm font-medium ${
+              !useCamera ? "bg-blue-600 text-white" : "bg-blue-200 text-gray-800"
+            }`}
+            onClick={() => setUseCamera(false)}
+          >
+            Mouse
+          </button>
+          <button
+            className={`px-3 py-1 rounded-r-lg text-sm font-medium ${
+              useCamera ? "bg-blue-600 text-white" : "bg-blue-200 text-gray-800"
+            }`}
+            onClick={() => setUseCamera(true)}
+          >
+            Hand Gesture
+          </button>
+        </div>
       </div>
-      
+
+      {/* Webcam Feed */}
+      <WebcamFeed enabled={useCamera} onLandmarks={onLandmarks} />
+
+      {useCamera && (
+        <p className="text-white text-xs text-center mb-2">
+          Point with index finger to move. Extend thumb + index to grab. Tuck thumb to release.
+        </p>
+      )}
+
+      {/* Virtual cursor */}
+      {useCamera && (
+        <div
+          className="fixed pointer-events-none z-50"
+          style={{
+            left: cursor.x - 12,
+            top: cursor.y - 12,
+            width: 24,
+            height: 24,
+            borderRadius: "50%",
+            backgroundColor: cursor.isGrabbing ? "rgba(255, 0, 0, 0.7)" : "rgba(0, 255, 0, 0.7)",
+            border: "2px solid white",
+            transition: "background-color 0.1s",
+          }}
+        />
+      )}
+
+      {/* Floating shape following cursor while held */}
+      {useCamera && gestureShape && (
+        <div
+          className="fixed pointer-events-none z-40 opacity-70"
+          style={{ left: cursor.x - 24, top: cursor.y - 24 }}
+        >
+          <ShapeComponent color={gestureShape.color} type={gestureShape.type} />
+        </div>
+      )}
+
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        {/* Main game container with more space for drop zones */}
         <div className="flex">
-          {/* Shapes container - made more compact */}
           <div className="w-1/2 pr-2">
             <div className="bg-white bg-opacity-20 p-3 rounded-lg shadow-md">
               <div className="grid grid-cols-3 gap-2">
                 {shapes.map(shape => (
                   !placedShapes[shape.id] && (
-                    <DraggableShape 
-                      key={shape.id} 
-                      id={shape.id} 
-                      color={shape.color} 
-                      type={shape.type} 
+                    <DraggableShape
+                      key={shape.id}
+                      id={shape.id}
+                      color={shape.color}
+                      type={shape.type}
                       compact={true}
+                      registerRef={registerShape}
+                      isGestureHeld={gestureHeld === shape.id}
                     />
                   )
                 ))}
@@ -158,15 +240,21 @@ const ShapeMatchingGame = () => {
             </div>
           </div>
 
-          {/* Drop zones container - pushed to the right edge */}
           <div className="w-1/2 flex justify-end">
             <div className="flex flex-col space-y-3">
               {randomizedDropZones.map(zone => (
-                <DropZone 
-                  key={zone.id} 
-                  id={zone.id} 
+                <DropZone
+                  key={zone.id}
+                  id={zone.id}
                   label={zone.label}
                   placedShape={shapes.find(s => placedShapes[s.id] === zone.id)}
+                  registerRef={registerZone}
+                  isHovered={useCamera && cursor.isGrabbing && gestureHeld && (() => {
+                    const el = zoneElements.current.get(zone.id);
+                    if (!el) return false;
+                    const r = el.getBoundingClientRect();
+                    return cursor.x >= r.left && cursor.x <= r.right && cursor.y >= r.top && cursor.y <= r.bottom;
+                  })()}
                 />
               ))}
             </div>
@@ -176,18 +264,18 @@ const ShapeMatchingGame = () => {
         <DragOverlay>
           {activeId ? (
             <div className="opacity-80">
-              <ShapeComponent 
-                color={activeShape.color} 
-                type={activeShape.type} 
+              <ShapeComponent
+                color={activeShape.color}
+                type={activeShape.type}
               />
             </div>
           ) : null}
         </DragOverlay>
       </DndContext>
-      
+
       {isGameComplete && (
-        <button 
-          onClick={resetGame} 
+        <button
+          onClick={resetGame}
           className="mt-6 bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded self-center"
         >
           Play Again
@@ -197,8 +285,8 @@ const ShapeMatchingGame = () => {
   );
 };
 
-// Draggable shape component using useDraggable hook
-function DraggableShape({ id, color, type, compact }) {
+// Draggable shape component
+function DraggableShape({ id, color, type, compact, registerRef, isGestureHeld }) {
   const {
     attributes,
     listeners,
@@ -206,17 +294,25 @@ function DraggableShape({ id, color, type, compact }) {
     transform,
   } = useDraggable({ id });
 
+  const combinedRef = useCallback((el) => {
+    setNodeRef(el);
+    registerRef(id, el);
+  }, [setNodeRef, registerRef, id]);
+
   const style = {
     transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
+    opacity: isGestureHeld ? 0.4 : 1,
   };
 
   return (
-    <div 
-      ref={setNodeRef} 
-      style={style} 
-      {...attributes} 
+    <div
+      ref={combinedRef}
+      style={style}
+      {...attributes}
       {...listeners}
-      className="bg-white p-2 rounded-md flex items-center justify-center cursor-grab touch-manipulation"
+      className={`bg-white p-2 rounded-md flex items-center justify-center cursor-grab touch-manipulation transition-opacity ${
+        isGestureHeld ? 'ring-2 ring-yellow-400' : ''
+      }`}
     >
       <ShapeComponent color={color} type={type} compact={compact} />
     </div>
@@ -225,28 +321,27 @@ function DraggableShape({ id, color, type, compact }) {
 
 // Shape component for rendering different shapes
 function ShapeComponent({ color, type, compact }) {
-  // Determine size based on compact mode
   const size = compact ? "w-12 h-12" : "w-16 h-16";
   const rectSize = compact ? "w-14 h-10" : "w-20 h-12";
-  
+
   switch (type) {
     case 'circle':
       return (
-        <div 
+        <div
           className={`${size} rounded-full border-2 border-black`}
           style={{ backgroundColor: color }}
         />
       );
     case 'square':
       return (
-        <div 
+        <div
           className={`${size} border-2 border-black`}
           style={{ backgroundColor: color }}
         />
       );
     case 'rectangle':
       return (
-        <div 
+        <div
           className={`${rectSize} border-2 border-black`}
           style={{ backgroundColor: color }}
         />
@@ -254,22 +349,22 @@ function ShapeComponent({ color, type, compact }) {
     case 'triangle':
       return (
         <div className={`relative ${size} flex items-center justify-center`}>
-          <div 
+          <div
             className="absolute"
-            style={{ 
-              width: '0', 
-              height: '0', 
-              borderLeft: compact ? '20px solid transparent' : '25px solid transparent', 
-              borderRight: compact ? '20px solid transparent' : '25px solid transparent', 
+            style={{
+              width: '0',
+              height: '0',
+              borderLeft: compact ? '20px solid transparent' : '25px solid transparent',
+              borderRight: compact ? '20px solid transparent' : '25px solid transparent',
               borderBottom: `${compact ? '34px' : '43px'} solid ${color}`,
               filter: 'drop-shadow(0px 0px 1px black)'
-            }} 
+            }}
           />
         </div>
       );
     case 'diamond':
       return (
-        <div 
+        <div
           className={`${size} border-2 border-black transform rotate-45`}
           style={{ backgroundColor: color }}
         />
@@ -277,14 +372,14 @@ function ShapeComponent({ color, type, compact }) {
     case 'pentagon':
       return (
         <div className={`relative ${size} flex items-center justify-center`}>
-          <svg 
-            viewBox="0 0 100 100" 
+          <svg
+            viewBox="0 0 100 100"
             className="w-full h-full"
           >
-            <polygon 
-              points="50,5 95,35 80,90 20,90 5,35" 
-              fill={color} 
-              stroke="black" 
+            <polygon
+              points="50,5 95,35 80,90 20,90 5,35"
+              fill={color}
+              stroke="black"
               strokeWidth="3"
             />
           </svg>
@@ -296,15 +391,20 @@ function ShapeComponent({ color, type, compact }) {
 }
 
 // Drop zone component
-function DropZone({ id, label, placedShape }) {
+function DropZone({ id, label, placedShape, registerRef, isHovered }) {
   const { setNodeRef, isOver } = useDroppable({ id });
+
+  const combinedRef = useCallback((el) => {
+    setNodeRef(el);
+    registerRef(id, el);
+  }, [setNodeRef, registerRef, id]);
 
   return (
     <div className="flex items-center">
-      <div 
-        ref={setNodeRef}
+      <div
+        ref={combinedRef}
         className={`w-24 h-20 rounded-lg flex items-center justify-center mr-4 transition-colors ${
-          isOver ? 'bg-blue-200' : 'bg-blue-300'
+          isOver || isHovered ? 'bg-yellow-200 ring-2 ring-yellow-400' : 'bg-blue-300'
         }`}
       >
         {placedShape && (

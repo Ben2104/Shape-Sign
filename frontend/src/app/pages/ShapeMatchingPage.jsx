@@ -3,8 +3,8 @@ import React from 'react';
 import Navbar from '../components/Navbar';
 import ShapeMatchingGame from '../components/ShapeMatchingGame';
 import Link from 'next/link';
-import VideoPlayer from '../components/VideoPlayer';
 import Card from '../components/Card';
+import Footer from '../components/Footer';
 
 const ShapeMatchingPage = () => {
   return (
@@ -16,7 +16,6 @@ const ShapeMatchingPage = () => {
             Back
           </Link>
         </div>
-        <VideoPlayer src="/shape_matching.mp4" />
         <div className="flex space-x-4 mb-8">
           <Card
             imgSrc="/click.png"
@@ -47,6 +46,9 @@ const ShapeMatchingPage = () => {
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
           <ShapeMatchingGame />
         </div>
+      </div>
+      <div className="mt-12">
+        <Footer />
       </div>
     </div>
   );
